@@ -18,15 +18,8 @@
 package org.jboss.weld.environment.jetty;
 
 import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.servlet.ServletHolder;
-
-import javax.servlet.Filter;
-import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import java.util.EventListener;
 
 /**
  * Jetty Eclipse Weld support.
@@ -66,36 +59,14 @@ public class WeldDecorator implements ServletContextHandler.Decorator {
         return injector;
     }
 
-    public <T extends Filter> T decorateFilterInstance(T filter) throws ServletException {
-        getInjector().inject(filter);
-        return filter;
+    @Override
+    public <T> T decorate(T o) {
+        getInjector().inject(o);
+        return o;
     }
 
-    public <T extends Servlet> T decorateServletInstance(T servlet) throws ServletException {
-        getInjector().inject(servlet);
-        return servlet;
-    }
-
-    public <T extends EventListener> T decorateListenerInstance(T listener) throws ServletException {
-        getInjector().inject(listener);
-        return listener;
-    }
-
-    public void decorateFilterHolder(FilterHolder filter) throws ServletException {
-    }
-
-    public void decorateServletHolder(ServletHolder servlet) throws ServletException {
-    }
-
-    public void destroyServletInstance(Servlet s) {
-        getInjector().destroy(s);
-    }
-
-    public void destroyFilterInstance(Filter f) {
-        getInjector().destroy(f);
-    }
-
-    public void destroyListenerInstance(EventListener f) {
-        getInjector().destroy(f);
+    @Override
+    public void destroy(Object o) {
+        getInjector().destroy(o);
     }
 }
